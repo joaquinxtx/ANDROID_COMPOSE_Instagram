@@ -52,7 +52,8 @@ fun HomeInstagram() {
         HeaderHome()
         UserView()
         DividerInsta()
-        PublisherItem()
+        UserPublisherView()
+
 
     }
 }
@@ -173,13 +174,23 @@ fun getUsersInstagram(): List<UserFake> {
 
 //Publisher Users + RecyclerView Vertically
 
+@Composable
+fun UserPublisherView() {
+
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(18.dp)) {
+        items(getPublisherInstagram()) {
+            PublisherItem(publisherUsers =it )
+        }
+    }
+}
+
 
 @Composable
-fun PublisherItem() {
+fun PublisherItem(publisherUsers: PublisherUsers) {
     Card() {
         Column() {
-            PublisherHeader()
-            PublisherBody()
+            PublisherHeader(publisherUsers.photoProfile,publisherUsers.nameUser)
+            PublisherBody(publisherUsers.likesPublisher,publisherUsers.nameUser,publisherUsers.footerPublisher,publisherUsers.date,publisherUsers.comments,publisherUsers.photoPublisher)
 
         }
 
@@ -187,39 +198,72 @@ fun PublisherItem() {
 }
 
 @Composable
-fun PublisherBody() {
+fun PublisherBody(publisherLikes: Int,user:String , comment:String , date:String ,numberComment:String, img:Int) {
+    var like by remember { mutableStateOf(false) }
     Column() {
         Image(
-            painter = painterResource(id = R.drawable.imagen),
+            painter = painterResource(id = img),
             contentDescription = "Publisher User",
             modifier = Modifier
                 .fillMaxWidth()
                 .height(250.dp)
         )
-        IconsBodyPublisher()
+        IconsBodyPublisher(
+            unselectedIcon = {
+                Icon(
+                    painterResource(id = R.drawable.ic_like),
+                    contentDescription = "Close App",
+                    modifier = Modifier.size(38.dp),
+                    tint = Color(0xFF626464)
+
+                )
+            },
+            selectedIcon = {
+                Icon(
+                    painterResource(id = R.drawable.ic_like_filled),
+                    contentDescription = "Close App",
+                    modifier = Modifier.size(38.dp),
+                    tint = Color(0xFFE00B0B)
+
+                )
+            },
+            isSelected = like
+        ){
+            like = !like
+        }
+        LikesPublisher(isSelected = like,publisherLikes)
+        FooterPublisher(user,comment,date,numberComment)
 
 
     }
 }
 
 @Composable
-fun LikesPublisher() {
-    Text(text = "125 Me gusta", fontWeight = FontWeight.Bold, modifier = Modifier.padding(6.dp))
+fun LikesPublisher(isSelected: Boolean, publisherLikes:Int ) {
+    val defaultValue = 1
+    Text(
+        text = if (isSelected) (publisherLikes + defaultValue).toString()+ " Me gustas" else publisherLikes.toString() + " Me gustas",
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(6.dp)
+    )
 }
 
 @Composable
-fun IconsBodyPublisher() {
-    Column(modifier = Modifier.padding(horizontal = 9.dp)) {
-        Row() {
-            Icon(
-                painterResource(id = R.drawable.ic_like),
-                contentDescription = "Close App",
-                modifier = Modifier
-                    .size(42.dp)
-                    ,
-                tint = Color(0xFF626464)
+fun IconsBodyPublisher(unselectedIcon: @Composable () -> Unit,
+                       selectedIcon: @Composable () -> Unit,
+                       isSelected: Boolean,
+                       onItemSelected: () -> Unit) {
 
-            )
+    Column(modifier = Modifier
+        .padding(horizontal = 9.dp)
+        .clickable { onItemSelected() }) {
+        Row() {
+            if (isSelected){
+                selectedIcon()
+            }else{
+                unselectedIcon()
+            }
+
             Box(Modifier.padding(12.dp))
             Icon(
                 painterResource(id = R.drawable.ic_chat),
@@ -233,8 +277,7 @@ fun IconsBodyPublisher() {
                 painterResource(id = R.drawable.ic_rt),
                 contentDescription = "Close App",
                 modifier = Modifier
-                    .size(42.dp)
-                    ,
+                    .size(42.dp),
                 tint = Color(0xFF626464)
 
             )
@@ -250,24 +293,23 @@ fun IconsBodyPublisher() {
             )
 
         }
-        LikesPublisher()
-        FooterPublisher()
+
     }
 }
 
 @Composable
-fun FooterPublisher() {
+fun FooterPublisher(user:String , comment:String , date:String ,numberComment:String) {
 
     Box() {
-        Column() {
+        Column(modifier = Modifier.padding(start = 8.dp)) {
             Text(
-                text = "User12345",
+                text = user,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(end = 5.dp)
             )
-            Text(text = "hola esto es una prueba de  pantalla espero que funcione bien y que ndsaoijhbn iafdh sijofhfiauo h ")
+            Text(text = comment)
             Text(
-                text = "Ver los 1.050 comentarios",
+                text = "Ver los $numberComment comentarios",
                 fontSize = 19.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color(
@@ -277,7 +319,7 @@ fun FooterPublisher() {
             )
             Row() {
                 Text(
-                    text = "Hace 2 Dias",
+                    text = "Hace $date Dias",
                     fontSize = 12.sp,
                     color = Color(0xFF4E4E4E),
                     modifier = Modifier.padding(end = 12.dp)
@@ -292,11 +334,11 @@ fun FooterPublisher() {
 }
 
 @Composable
-fun PublisherHeader() {
+fun PublisherHeader(photo:Int,user:String) {
     Box() {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
             Image(
-                painter = painterResource(id = R.drawable.flash),
+                painter = painterResource(id = photo),
                 contentDescription = "Profile image",
                 modifier = Modifier
                     .padding(end = 9.dp)
@@ -304,7 +346,7 @@ fun PublisherHeader() {
                     .size(55.dp)
             )
             Text(
-                text = "User12345",
+                text = user,
                 modifier = Modifier.align(Alignment.CenterVertically),
                 fontWeight = FontWeight.Bold
             )
@@ -329,67 +371,86 @@ fun getPublisherInstagram(): List<PublisherUsers> {
     return listOf(
 
         PublisherUsers(
-            "userRandom",
+            "Wonder_Woman",
             137,
             "lindo dia en jujuy",
-            R.drawable.spiderman,
-            R.drawable.spiderman
+            "123",
+            "21",
+            R.drawable.wonder_woman,
+
+            R.drawable.maki
         ),
         PublisherUsers(
-            "userRandom",
-            137,
+            "Logan_el_garras",
+            1667,
             "lindo dia en jujuy",
-            R.drawable.spiderman,
-            R.drawable.spiderman
+            "123",
+            "14",
+            R.drawable.logan,
+            R.drawable.imagen
         ),
         PublisherUsers(
-            "userRandom",
-            137,
+            "Spidi",
+            17,
             "lindo dia en jujuy",
+            "1.333",
+            "1",
             R.drawable.spiderman,
-            R.drawable.spiderman
+            R.drawable.maki
         ),
         PublisherUsers(
-            "userRandom",
-            137,
+            "Batman_dark",
+            299,
             "lindo dia en jujuy",
-            R.drawable.spiderman,
-            R.drawable.spiderman
+            "13",
+            "11",
+            R.drawable.batman,
+            R.drawable.imagen
         ),
         PublisherUsers(
-            "userRandom",
-            137,
+            "Spiderman_User2",
+            457,
             "lindo dia en jujuy",
+            "123",
+            "9",
             R.drawable.spiderman,
-            R.drawable.spiderman
+            R.drawable.maki
         ),
         PublisherUsers(
-            "userRandom",
-            137,
+            "Makima",
+            539,
             "lindo dia en jujuy",
-            R.drawable.spiderman,
-            R.drawable.spiderman
+            "123",
+            "5",
+            R.drawable.maki,
+            R.drawable.imagen
         ),
         PublisherUsers(
-            "userRandom",
-            137,
+            "Flash",
+            78,
             "lindo dia en jujuy",
-            R.drawable.spiderman,
-            R.drawable.spiderman
+            "123",
+            "2",
+            R.drawable.flash,
+            R.drawable.maki
         ),
         PublisherUsers(
-            "userRandom",
-            137,
+            "El_ciegp",
+            85,
             "lindo dia en jujuy",
-            R.drawable.spiderman,
-            R.drawable.spiderman
+            "123",
+            "3",
+            R.drawable.daredevil,
+            R.drawable.imagen
         ),
         PublisherUsers(
-            "userRandom",
-            137,
+            "Spiderman_cuaenta3",
+            37,
             "lindo dia en jujuy",
+            "1.233",
+            "12",
             R.drawable.spiderman,
-            R.drawable.spiderman
+            R.drawable.maki
         )
     )
 }
