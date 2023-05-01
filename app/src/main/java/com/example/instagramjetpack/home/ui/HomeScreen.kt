@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,18 +25,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.instagramjetpack.R
+import com.example.instagramjetpack.home.data.getPublisherInstagram
+import com.example.instagramjetpack.home.data.getUsersInstagram
+import com.example.instagramjetpack.home.ui.HomeViewModel
 import com.example.instagramjetpack.model.PublisherUsers
 import com.example.instagramjetpack.model.UserFake
 
 
 @Composable
-fun HomeInstagram() {
+fun HomeScreen(homeViewModel: HomeViewModel, navigationController: NavHostController) {
     val listState: LazyListState = rememberLazyListState()
 
     Scaffold(
         topBar = { HeaderHome() },
-        bottomBar = { MyBottomNavigation() }
+        bottomBar = { MyBottomNavigation(homeViewModel,navigationController) }
     ) {
         Column(
             Modifier
@@ -48,9 +53,9 @@ fun HomeInstagram() {
                 }
             }
             AnimatedVisibility(visible = showHistory) {
-                    UserView() // LazyRow (historias de instagram)
-                    DividerInsta()
+                UserView() // LazyRow (historias de instagram)
             }
+            DividerInsta()
             UserPublisherView(state = listState)// LazyColum (Publicaciones)
 
 
@@ -62,7 +67,7 @@ fun HomeInstagram() {
 //Header Logos + Iconos
 @Composable
 fun HeaderHome() {
-    TopAppBar(title = { LogoInsta() },
+    TopAppBar(title = { LogoInstagram() },
         backgroundColor = Color.White,
 
         actions = {
@@ -87,46 +92,67 @@ fun HeaderHome() {
         })
 
 }
+
 @Composable
-fun MyBottomNavigation() {
-    var index by remember { mutableStateOf(0) }
+fun MyBottomNavigation(homeViewModel: HomeViewModel, navigationController: NavHostController) {
+    val index: Int by homeViewModel.index.observeAsState(initial = 0)
     BottomNavigation(backgroundColor = Color.White, contentColor = Color.Black) {
-        BottomNavigationItem(selected = index == 0, onClick = { index = 0 }, icon = {
-            Icon(
-                imageVector = Icons.Default.Home,
-                contentDescription = "home"
-            )
-        }, label = { Text(text = "Home") })
-        BottomNavigationItem(selected = index == 1, onClick = { index = 1 }, icon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "favorite"
-            )
-        }, label = { Text(text = "Fav") })
-        BottomNavigationItem(selected = index == 2, onClick = { index = 2 }, icon = {
-            Icon(
-                imageVector = Icons.Default.AddBox,
-                contentDescription = "person"
-            )
-        }, label = { Text(text = "Person") })
-        BottomNavigationItem(selected = index == 3, onClick = { index = 3 }, icon = {
-            Icon(
-                imageVector = Icons.Default.MusicVideo,
-                contentDescription = "favorite"
-            )
-        }, label = { Text(text = "Fav") })
-        BottomNavigationItem(selected = index == 4, onClick = { index = 4 }, icon = {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = "person"
-            )
-        }, label = { Text(text = "Person") })
+        BottomNavigationItem(
+            selected = index == 0,
+            onClick = { homeViewModel.onNavigationWindows(0, navigationController) },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "home"
+                )
+            },
+            label = { Text(text = "Home") })
+        BottomNavigationItem(
+            selected = index == 1,
+            onClick = { homeViewModel.onNavigationWindows(1, navigationController) },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "favorite"
+                )
+            },
+            label = { Text(text = "Fav") })
+        BottomNavigationItem(
+            selected = index == 2,
+            onClick = { homeViewModel.onNavigationWindows(2, navigationController) },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.AddBox,
+                    contentDescription = "person"
+                )
+            },
+            label = { Text(text = "Person") })
+        BottomNavigationItem(
+            selected = index == 3,
+            onClick = { homeViewModel.onNavigationWindows(3, navigationController) },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.MusicVideo,
+                    contentDescription = "favorite"
+                )
+            },
+            label = { Text(text = "Fav") })
+        BottomNavigationItem(
+            selected = index == 4,
+            onClick = { homeViewModel.onNavigationWindows(4, navigationController) },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "person"
+                )
+            },
+            label = { Text(text = "Person") })
     }
 }
 
 
 @Composable
-fun LogoInsta() {
+fun LogoInstagram() {
     Image(
         painter = painterResource(id = R.drawable.insta),
         contentDescription = "logo",
@@ -152,7 +178,7 @@ fun DividerInsta() {
 @Composable
 fun UserView() {
     val context = LocalContext.current
-    Box(){
+    Box() {
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(getUsersInstagram()) {
                 UserItem(userFake = it) {
@@ -185,23 +211,11 @@ fun UserItem(userFake: UserFake, onItemSelected: (UserFake) -> Unit) {
 
 }
 
-fun getUsersInstagram(): List<UserFake> {
-    return listOf(
-        UserFake("Joaquin", false, true, R.drawable.spiderman),
-        UserFake("User2", true, true, R.drawable.daredevil),
-        UserFake("user3", false, true, R.drawable.flash),
-        UserFake("user4", true, true, R.drawable.spiderman),
-        UserFake("user5", false, false, R.drawable.wonder_woman),
-        UserFake("User7", true, true, R.drawable.logan),
-        UserFake("User8", false, true, R.drawable.green_lantern),
-        UserFake("User9", false, false, R.drawable.batman),
-    )
-}
 
 //Publisher Users + RecyclerView Vertically
 
 @Composable
-fun UserPublisherView(state:LazyListState) {
+fun UserPublisherView(state: LazyListState) {
 
     LazyColumn(verticalArrangement = Arrangement.spacedBy(18.dp), state = state) {
         items(getPublisherInstagram()) {
@@ -409,91 +423,5 @@ fun PublisherHeader(photo: Int, user: String) {
 }
 
 
-fun getPublisherInstagram(): List<PublisherUsers> {
-    return listOf(
 
-        PublisherUsers(
-            "Wonder_Woman",
-            137,
-            "lindo dia en jujuy",
-            "123",
-            "21",
-            R.drawable.wonder_woman,
-
-            R.drawable.maki
-        ),
-        PublisherUsers(
-            "Logan_el_garras",
-            1667,
-            "lindo dia en jujuy",
-            "123",
-            "14",
-            R.drawable.logan,
-            R.drawable.imagen
-        ),
-        PublisherUsers(
-            "Spidi",
-            17,
-            "lindo dia en jujuy",
-            "1.333",
-            "1",
-            R.drawable.spiderman,
-            R.drawable.maki
-        ),
-        PublisherUsers(
-            "Batman_dark",
-            299,
-            "lindo dia en jujuy",
-            "13",
-            "11",
-            R.drawable.batman,
-            R.drawable.imagen
-        ),
-        PublisherUsers(
-            "Spiderman_User2",
-            457,
-            "lindo dia en jujuy",
-            "123",
-            "9",
-            R.drawable.spiderman,
-            R.drawable.maki
-        ),
-        PublisherUsers(
-            "Makima",
-            539,
-            "lindo dia en jujuy",
-            "123",
-            "5",
-            R.drawable.maki,
-            R.drawable.imagen
-        ),
-        PublisherUsers(
-            "Flash",
-            78,
-            "lindo dia en jujuy",
-            "123",
-            "2",
-            R.drawable.flash,
-            R.drawable.maki
-        ),
-        PublisherUsers(
-            "El_ciegp",
-            85,
-            "lindo dia en jujuy",
-            "123",
-            "3",
-            R.drawable.daredevil,
-            R.drawable.imagen
-        ),
-        PublisherUsers(
-            "Spiderman_cuaenta3",
-            37,
-            "lindo dia en jujuy",
-            "1.233",
-            "12",
-            R.drawable.spiderman,
-            R.drawable.maki
-        )
-    )
-}
 

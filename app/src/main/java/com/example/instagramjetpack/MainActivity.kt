@@ -10,7 +10,18 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.instagramjetpack.addPublication.AddPublicationScreen
+
+import com.example.instagramjetpack.home.HomeScreen
+import com.example.instagramjetpack.home.ui.HomeViewModel
 import com.example.instagramjetpack.login.ui.LoginViewModel
+import com.example.instagramjetpack.model.Routes
+import com.example.instagramjetpack.profile.ProfileScreen
+import com.example.instagramjetpack.reels.ReelsScreen
+import com.example.instagramjetpack.search.SearchScreen
 import com.example.instagramjetpack.ui.theme.InstagramJetPackTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +34,19 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    LoginScreen(LoginViewModel())
+                    val navigationController = rememberNavController()
+                    NavHost(
+                        navController = navigationController,
+                        startDestination = Routes.Login.route
+                    ){
+                        composable(Routes.Login.route) { LoginScreen(LoginViewModel(),navigationController) }
+                        composable(Routes.Home.route) { HomeScreen(HomeViewModel(), navigationController) }
+                        composable(Routes.AddPublication.route) { AddPublicationScreen( navigationController) }
+                        composable(Routes.Profile.route) { ProfileScreen( navigationController) }
+                        composable(Routes.Search.route) { SearchScreen( navigationController) }
+                        composable(Routes.Reels.route) { ReelsScreen( navigationController) }
+                    }
+
                 }
             }
         }
