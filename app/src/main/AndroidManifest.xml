@@ -12,6 +12,7 @@
         android:usesCleartextTraffic="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".InstagramCompose"
         android:theme="@style/Theme.InstagramJetPack"
         tools:targetApi="31">
         <activity
