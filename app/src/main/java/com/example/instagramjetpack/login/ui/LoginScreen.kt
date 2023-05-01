@@ -1,11 +1,11 @@
 package com.example.instagramjetpack
 
 import android.app.Activity
-import android.util.Patterns
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 
@@ -16,7 +16,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,18 +28,31 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.instagramjetpack.login.ui.LoginViewModel
 
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(loginViewModel: LoginViewModel, navigationController: NavHostController) {
     Box(
         Modifier
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        Header(Modifier.align(Alignment.TopEnd))
-        Body(Modifier.align(Alignment.Center))
-        Footer(Modifier.align(Alignment.BottomCenter))
+        val isLoading:Boolean by loginViewModel.isLoading.observeAsState(initial = false)
+        if (isLoading){
+            Box(
+                Modifier
+                    .fillMaxSize(), contentAlignment = Alignment.Center
+                    ){
+                CircularProgressIndicator()
+            }
+        }else{
+            Header(Modifier.align(Alignment.TopEnd))
+            Body(Modifier.align(Alignment.Center),loginViewModel,navigationController)
+            Footer(Modifier.align(Alignment.BottomCenter))
+
+        }
 
     }
 }
@@ -77,26 +90,28 @@ fun SingUp() {
 }
 
 @Composable
-fun Body(modifier: Modifier) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var isLoginEnable by rememberSaveable { mutableStateOf(false) }
+fun Body(modifier: Modifier, loginViewModel: LoginViewModel,navigationController: NavHostController ) {
+    val email:String by loginViewModel.email.observeAsState(initial = "")
+    val password:String by loginViewModel.password.observeAsState(initial = "")
+    val isLoginEnable:Boolean by loginViewModel.isLoginEnable.observeAsState(initial = false)
+
+
     Column(modifier = modifier) {
         ImageLogo(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
         Email(email) {
-            email = it
-            isLoginEnable=enableLogin(email, password)
+            loginViewModel.onLoginChange(it,password)
+
         }
         Spacer(modifier = Modifier.size(4.dp))
-        Password(password) {
-            password = it
-            isLoginEnable=enableLogin(email, password)
+        Password(password,loginViewModel) {
+            loginViewModel.onLoginChange(email,it)
+
         }
         Spacer(modifier = Modifier.size(8.dp))
         ForgotPassword(Modifier.align(Alignment.End))
         Spacer(modifier = Modifier.size(16.dp))
-        LoginButton(isLoginEnable)
+        LoginButton(isLoginEnable , loginViewModel ,navigationController)
         Spacer(modifier = Modifier.size(16.dp))
         LoginDivider()
         Spacer(modifier = Modifier.size(32.dp))
@@ -154,9 +169,10 @@ fun LoginDivider() {
 }
 
 @Composable
-fun LoginButton(loginEnable: Boolean) {
+fun LoginButton(loginEnable: Boolean , loginViewModel: LoginViewModel ,navigationController: NavHostController) {
+
     Button(
-        onClick = { },
+        onClick = {loginViewModel.onLoginSelected(navigationController) } ,
         enabled = loginEnable,
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
@@ -170,8 +186,6 @@ fun LoginButton(loginEnable: Boolean) {
     }
 }
 
-fun enableLogin(email: String, password: String) =
-    Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 6
 
 
 @Composable
@@ -186,8 +200,8 @@ fun ForgotPassword(modifier: Modifier) {
 }
 
 @Composable
-fun Password(password: String, onTextChange: (String) -> Unit) {
-    var passwordVisibility by remember { mutableStateOf(false) }
+fun Password(password: String, loginViewModel: LoginViewModel ,onTextChange: (String) -> Unit) {
+    val passwordVisibility:Boolean by loginViewModel.passwordVisibility.observeAsState(initial = false)
     TextField(
         value = password,
         onValueChange = { onTextChange(it) },
@@ -202,7 +216,7 @@ fun Password(password: String, onTextChange: (String) -> Unit) {
             } else {
                 Icons.Filled.Visibility
             }
-            IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+            IconButton(onClick = { loginViewModel.onPasswordVisibility(passwordVisibility) }) {
                 Icon(imageVector = imagen, contentDescription = "show password")
             }
         },
