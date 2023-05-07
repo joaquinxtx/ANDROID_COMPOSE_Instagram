@@ -1,28 +1,25 @@
 package com.example.instagramjetpack.profile
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.Column
+
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+
 import androidx.navigation.NavHostController
+import com.example.instagramjetpack.MyScaffold
+import com.example.instagramjetpack.Scaffold.ScaffoldViewModel
+import com.example.instagramjetpack.home.HeaderHome
+import com.example.instagramjetpack.home.HomeScreenComplete
+
 
 @Composable
-fun ProfileScreen(navigationController: NavHostController) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-    ) {
-        Text(
-            text = "Pantalla 1 ",
-            modifier = Modifier
-                .align(Alignment.Center)
-        )
+fun ProfileScreen( navigationController: NavHostController) {
+    MyScaffold(
+        content = { Column {
+            HeaderHome()
+            HomeScreenComplete()
 
-    }
+        }},
+        scaffoldViewModel = ScaffoldViewModel(),
+        navigationController = navigationController
+    )
 }

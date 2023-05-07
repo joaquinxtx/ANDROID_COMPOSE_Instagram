@@ -23,11 +23,13 @@ fun MyScaffold(content: @Composable () -> Unit , scaffoldViewModel: ScaffoldView
 
 @Composable
 fun MyBottomNavigation(scaffoldViewModel: ScaffoldViewModel, navigationController: NavHostController) {
-    val index by scaffoldViewModel.index.observeAsState(initial = 0)
+
+    val index:Int by scaffoldViewModel.index.observeAsState( 0)
+
     BottomNavigation(backgroundColor = Color.White, contentColor = Color.Black) {
         BottomNavigationItem(
-            selected = index == 0,
-            onClick = { scaffoldViewModel.onNavigationWindows(0, navigationController) },
+            onClick = { scaffoldViewModel.onNavigationWindows(index = 0, navigationController) },
+            selected = true,
             icon = {
                 Icon(
                     imageVector = Icons.Default.Home,
@@ -36,8 +38,8 @@ fun MyBottomNavigation(scaffoldViewModel: ScaffoldViewModel, navigationControlle
             },
             label = { Text(text = "Home") })
         BottomNavigationItem(
-            selected = index == 1 ,
-            onClick = { scaffoldViewModel.onNavigationWindows(1, navigationController) },
+            onClick = { scaffoldViewModel.onNavigationWindows(index = 1, navigationController) },
+            selected = true ,
             icon = {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -46,8 +48,8 @@ fun MyBottomNavigation(scaffoldViewModel: ScaffoldViewModel, navigationControlle
             },
             label = { Text(text = "Fav") })
         BottomNavigationItem(
-            selected = index == 2,
-            onClick = { scaffoldViewModel.onNavigationWindows(2, navigationController) } ,
+            onClick = { scaffoldViewModel.onNavigationWindows(index = 2, navigationController) } ,
+            selected = true,
             icon = {
                 Icon(
                     imageVector = Icons.Default.AddBox,
@@ -56,8 +58,8 @@ fun MyBottomNavigation(scaffoldViewModel: ScaffoldViewModel, navigationControlle
             },
             label = { Text(text = "Person") })
         BottomNavigationItem(
-            selected = index == 3,
-            onClick = { scaffoldViewModel.onNavigationWindows(3, navigationController) },
+            onClick = { scaffoldViewModel.onNavigationWindows(index = 3, navigationController) },
+            selected = true,
             icon = {
                 Icon(
                     imageVector = Icons.Default.MusicVideo,
@@ -66,8 +68,8 @@ fun MyBottomNavigation(scaffoldViewModel: ScaffoldViewModel, navigationControlle
             },
             label = { Text(text = "Fav") })
         BottomNavigationItem(
-            selected = index== 4,
-            onClick = { scaffoldViewModel.onNavigationWindows(4, navigationController)  },
+            onClick = { scaffoldViewModel.onNavigationWindows(index = 4, navigationController)  },
+            selected = true,
             icon = {
                 Icon(
                     imageVector = Icons.Default.Person,
