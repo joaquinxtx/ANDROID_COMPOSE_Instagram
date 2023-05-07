@@ -1,6 +1,7 @@
 package com.example.instagramjetpack.home
 
 
+
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -9,12 +10,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,40 +26,53 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.instagramjetpack.MyScaffold
 import com.example.instagramjetpack.R
+import com.example.instagramjetpack.Scaffold.ScaffoldViewModel
 import com.example.instagramjetpack.home.data.getPublisherInstagram
 import com.example.instagramjetpack.home.data.getUsersInstagram
-import com.example.instagramjetpack.home.ui.HomeViewModel
+
 import com.example.instagramjetpack.model.PublisherUsers
 import com.example.instagramjetpack.model.UserFake
 
 
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel, navigationController: NavHostController) {
-    val listState: LazyListState = rememberLazyListState()
+fun HomeScreen(navigationController: NavHostController) {
 
-    Scaffold(
-        topBar = { HeaderHome() },
-        bottomBar = { MyBottomNavigation(homeViewModel,navigationController) }
+    MyScaffold(
+        content = {
+            Column {
+                HeaderHome()
+                HomeScreenComplete()
+
+            }
+        },
+        scaffoldViewModel = ScaffoldViewModel(),
+        navigationController = navigationController
+    )
+
+
+}
+
+@Composable
+fun HomeScreenComplete() {
+    val listState: LazyListState = rememberLazyListState() // pasar al view model
+    Column(
+        Modifier
+            .fillMaxSize()
+
     ) {
-        Column(
-            Modifier
-                .fillMaxSize()
-
-        ) {
-            val showHistory by remember {
-                derivedStateOf {
-                    listState.firstVisibleItemIndex <= 0
-                }
+        val showHistory by remember {
+            derivedStateOf {
+                listState.firstVisibleItemIndex <= 0
             }
-            AnimatedVisibility(visible = showHistory) {
-                UserView() // LazyRow (historias de instagram)
-            }
-            DividerInsta()
-            UserPublisherView(state = listState)// LazyColum (Publicaciones)
-
-
         }
+        AnimatedVisibility(visible = showHistory) {
+            UserView() // LazyRow (historias de instagram)
+        }
+        DividerInsta()
+        UserPublisherView(state = listState)// LazyColum (Publicaciones)
+
 
     }
 }
@@ -91,63 +104,6 @@ fun HeaderHome() {
             }
         })
 
-}
-
-@Composable
-fun MyBottomNavigation(homeViewModel: HomeViewModel, navigationController: NavHostController) {
-    val index: Int by homeViewModel.index.observeAsState(initial = 0)
-    BottomNavigation(backgroundColor = Color.White, contentColor = Color.Black) {
-        BottomNavigationItem(
-            selected = index == 0,
-            onClick = { homeViewModel.onNavigationWindows(0, navigationController) },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = "home"
-                )
-            },
-            label = { Text(text = "Home") })
-        BottomNavigationItem(
-            selected = index == 1,
-            onClick = { homeViewModel.onNavigationWindows(1, navigationController) },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "favorite"
-                )
-            },
-            label = { Text(text = "Fav") })
-        BottomNavigationItem(
-            selected = index == 2,
-            onClick = { homeViewModel.onNavigationWindows(2, navigationController) },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.AddBox,
-                    contentDescription = "person"
-                )
-            },
-            label = { Text(text = "Person") })
-        BottomNavigationItem(
-            selected = index == 3,
-            onClick = { homeViewModel.onNavigationWindows(3, navigationController) },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.MusicVideo,
-                    contentDescription = "favorite"
-                )
-            },
-            label = { Text(text = "Fav") })
-        BottomNavigationItem(
-            selected = index == 4,
-            onClick = { homeViewModel.onNavigationWindows(4, navigationController) },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "person"
-                )
-            },
-            label = { Text(text = "Person") })
-    }
 }
 
 
@@ -253,7 +209,6 @@ fun PublisherBody(
     numberComment: String,
     img: Int
 ) {
-    var like by remember { mutableStateOf(false) }
     Column() {
         Image(
             painter = painterResource(id = img),
@@ -262,33 +217,7 @@ fun PublisherBody(
                 .fillMaxWidth()
                 .height(250.dp)
         )
-        IconsBodyPublisher(
-            unselectedIcon = {
-                Icon(
-                    painterResource(id = R.drawable.ic_like),
-                    contentDescription = "Close App",
-                    modifier = Modifier.size(38.dp),
-                    tint = Color(0xFF626464)
-
-                )
-            },
-            selectedIcon = {
-                Icon(
-                    painterResource(id = R.drawable.ic_like_filled),
-                    contentDescription = "Close App",
-                    modifier = Modifier.size(38.dp),
-                    tint = Color(0xFFE00B0B)
-
-                )
-            },
-            isSelected = like
-        ) {
-            like = !like
-        }
-        LikesPublisher(isSelected = like, publisherLikes)
-        FooterPublisher(user, comment, date, numberComment)
-
-
+        IconsBodyPublisher(publisherLikes, user, comment, date, numberComment)
     }
 }
 
@@ -304,22 +233,33 @@ fun LikesPublisher(isSelected: Boolean, publisherLikes: Int) {
 
 @Composable
 fun IconsBodyPublisher(
-    unselectedIcon: @Composable () -> Unit,
-    selectedIcon: @Composable () -> Unit,
-    isSelected: Boolean,
-    onItemSelected: () -> Unit
+    publisherLikes: Int,
+    user: String,
+    comment: String,
+    date: String,
+    numberComment: String
+
 ) {
+    var isClicked by remember { mutableStateOf(false) } /// pasar al view model
+    val iconImage = if (isClicked) R.drawable.ic_like_filled else  R.drawable.ic_like
+    val iconColor = if (isClicked) Color.Red else Color(0xFF626464)
 
-    Column(modifier = Modifier
-        .padding(horizontal = 9.dp)
-        .clickable { onItemSelected() }) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 9.dp)
+    ) {
         Row() {
-            if (isSelected) {
-                selectedIcon()
-            } else {
-                unselectedIcon()
-            }
+            Icon(
+                painterResource(iconImage),
+                contentDescription = "Close App",
+                modifier = Modifier
+                    .size(38.dp)
+                    .clickable(onClick = {
+                        isClicked = !isClicked
+                    }),
+                tint = iconColor
 
+            )
             Box(Modifier.padding(12.dp))
             Icon(
                 painterResource(id = R.drawable.ic_chat),
@@ -349,7 +289,8 @@ fun IconsBodyPublisher(
             )
 
         }
-
+        LikesPublisher(isSelected = isClicked, publisherLikes)
+        FooterPublisher(user, comment, date, numberComment)
     }
 }
 

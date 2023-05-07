@@ -17,14 +17,29 @@ class ScaffoldViewModel : ViewModel() {
         when (index) {
             0 -> {
                 navigationController.navigate(Routes.Home.route)
+
             }
-            1 -> navigationController.navigate(Routes.Search.route)
-            2 -> navigationController.navigate(Routes.AddPublication.route)
-            3 -> navigationController.navigate(Routes.Reels.route)
-            4 -> navigationController.navigate(Routes.Profile.route)
+            1 -> {
+                navigationController.navigate(Routes.Search.route)
+            }
+            2 -> {
+                navigationController.navigate(Routes.AddPublication.route)
+            }
+            3 -> {
+                navigationController.navigate(Routes.Reels.route)
+
+
+            }
+            4 -> {
+                navigationController.navigate(Routes.Profile.route)
+
+
+            }
             else -> {
                 println("ERRORROO")
             }
         }
+
+
     }
 }
