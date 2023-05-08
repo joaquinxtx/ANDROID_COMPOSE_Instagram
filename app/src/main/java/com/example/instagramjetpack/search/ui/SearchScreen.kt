@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.*
 
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,6 +37,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import coil.size.Size
 import com.example.instagramjetpack.MyScaffold
 import com.example.instagramjetpack.Scaffold.ScaffoldViewModel
 import com.example.instagramjetpack.search.domain.model.Characters
@@ -43,7 +46,11 @@ import kotlinx.coroutines.flow.collectLatest
 
 
 @Composable
-fun SearchScreen( onItemClicked:(Int)->Unit, searchViewModel: SearchViewModel , navigationController: NavHostController) {
+fun SearchScreen(
+    onItemClicked: (Int) -> Unit,
+    searchViewModel: SearchViewModel ,
+    navigationController: NavHostController
+) {
     val state = searchViewModel.state
     val eventFlow = searchViewModel.eventFlow
 
@@ -62,6 +69,7 @@ fun SearchScreen( onItemClicked:(Int)->Unit, searchViewModel: SearchViewModel , 
         content = {
             Column {
                 SearchTopBar(searchViewModel)
+                PhotoGrid(characters =state.characters , onItemClicked ={onItemClicked(it)} )
 
             }
         },
@@ -126,27 +134,34 @@ fun TitleSearch(searchViewModel: SearchViewModel) {
     }
 
 }
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PhotoGrid(characters: List<Characters>) {
+fun PhotoGrid(characters: List<Characters>,onItemClicked: (Int) -> Unit) {
     LazyVerticalGrid(
-        columns= GridCells.Adaptive(minSize = 128.dp)
+        columns = GridCells.Adaptive(minSize = 128.dp)
     ) {
-        items(characters.size){index ->
-            CharacterItem()
+        items(characters.size) { index ->
+            CharacterItem(index= characters[index] , onItemClicked = {onItemClicked(it)} )
 
         }
     }
 }
 
 @Composable
-fun CharacterItem(index:Characters,onItemClicked: (Int) -> Unit) {
+fun CharacterItem(index: Characters, onItemClicked: (Int) -> Unit) {
 
-    Box{
+    Box (modifier = Modifier.clickable{onItemClicked(index.id)}){
 
-        val painter = rememberAsyncImagePainter(model = ImageRequest.Builder(LocalContext.current)
+        val painter = rememberAsyncImagePainter(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(index.image)
+                .size(Size.ORIGINAL)
+                .build()
         )
-        
+
+        Image(painter = painter , contentDescription = null, contentScale = ContentScale.Crop , modifier = Modifier.fillMaxSize())
+
     }
 
 }

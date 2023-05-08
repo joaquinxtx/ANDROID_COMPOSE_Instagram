@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -47,37 +48,57 @@ class MainActivity : ComponentActivity() {
                     val navigationActions = remember(navigationController) {
                         RickAndMortyActions(navigationController)
                     }
+                    
+                    InstagramNavGraph(
+                        navigateToSearch = navigationActions.navigateToSearch,
+                        navigateToDetail = navigationActions.navigateToDetail,
+                        navigationController = navigationController,
+                        loginViewModel,
+                        searchViewModel
+                    )
 
-                    NavHost(
-                        navController = navigationController,
-                        startDestination = Routes.Search.route
-                    ) {
-                        composable(Routes.Login.route) {
-                            LoginScreen(
-                                loginViewModel,
-                                navigationController
-                            )
-                        }
-                        composable(Routes.Home.route) { HomeScreen(navigationController) }
-                        composable(Routes.AddPublication.route) {
-                            AddPublicationScreen(
-                                navigationController
-                            )
-                        }
-                        composable(Routes.Profile.route) { ProfileScreen(navigationController) }
-                        composable(Routes.Search.route) {
-                            SearchScreen(
-                                onItemClicked = { navigateToDetail(it) },
-                                searchViewModel, navigationController
-                            )
-                        }
-                        composable(Routes.Reels.route) { ReelsScreen(navigationController) }
-                    }
-
+                   
                 }
             }
         }
     }
+}
+
+@Composable
+fun InstagramNavGraph(
+    navigateToSearch:()->Unit,
+    navigateToDetail:(Int)->Unit,
+    navigationController:NavHostController,
+    loginViewModel:LoginViewModel ,
+    searchViewModel:SearchViewModel,
+    
+){
+    NavHost(
+        navController = navigationController,
+        startDestination = Routes.Search.route
+    ) {
+        composable(Routes.Login.route) {
+            LoginScreen(
+                loginViewModel ,
+                navigationController
+            )
+        }
+        composable(Routes.Home.route) { HomeScreen(navigationController) }
+        composable(Routes.AddPublication.route) {
+            AddPublicationScreen(
+                navigationController
+            )
+        }
+        composable(Routes.Profile.route) { ProfileScreen(navigationController) }
+        composable(Routes.Search.route) {
+            SearchScreen(
+                onItemClicked = { navigateToDetail(it) },
+                searchViewModel, navigationController
+            )
+        }
+        composable(Routes.Reels.route) { ReelsScreen(navigationController) }
+    }
+
 }
 
 @Composable
