@@ -6,9 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 
@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun SearchScreen(
     onItemClicked: (Int) -> Unit,
-    searchViewModel: SearchViewModel ,
+    searchViewModel: SearchViewModel,
     navigationController: NavHostController
 ) {
     val state = searchViewModel.state
@@ -69,7 +69,7 @@ fun SearchScreen(
         content = {
             Column {
                 SearchTopBar(searchViewModel)
-                PhotoGrid(characters =state.characters , onItemClicked ={onItemClicked(it)} )
+                PhotoGrid(characters = state.characters, onItemClicked = { onItemClicked(it) })
 
             }
         },
@@ -137,12 +137,12 @@ fun TitleSearch(searchViewModel: SearchViewModel) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PhotoGrid(characters: List<Characters>,onItemClicked: (Int) -> Unit) {
+fun PhotoGrid(characters: List<Characters>, onItemClicked: (Int) -> Unit) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 128.dp)
+        cells = GridCells.Adaptive(minSize = 128.dp)
     ) {
         items(characters.size) { index ->
-            CharacterItem(index= characters[index] , onItemClicked = {onItemClicked(it)} )
+            CharacterItem(index = characters[index], onItemClicked = { onItemClicked(it) })
 
         }
     }
@@ -151,7 +151,7 @@ fun PhotoGrid(characters: List<Characters>,onItemClicked: (Int) -> Unit) {
 @Composable
 fun CharacterItem(index: Characters, onItemClicked: (Int) -> Unit) {
 
-    Box (modifier = Modifier.clickable{onItemClicked(index.id)}){
+    Box(modifier = Modifier.clickable {}) {
 
         val painter = rememberAsyncImagePainter(
             model = ImageRequest.Builder(LocalContext.current)
@@ -160,7 +160,12 @@ fun CharacterItem(index: Characters, onItemClicked: (Int) -> Unit) {
                 .build()
         )
 
-        Image(painter = painter , contentDescription = null, contentScale = ContentScale.Crop , modifier = Modifier.fillMaxSize())
+        Image(
+            painter = painter,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
 
     }
 
