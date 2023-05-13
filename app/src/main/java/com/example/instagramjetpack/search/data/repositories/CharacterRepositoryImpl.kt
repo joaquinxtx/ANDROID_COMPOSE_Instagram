@@ -37,9 +37,9 @@ class CharacterRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCharacter(id: Int): Result<Character> {
-        val response = try{
+        val response = try {
             api.getCharacter(id)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             return Result.Error("An unknown error occurred")
         }
         return Result.Success(response.toCharacter())

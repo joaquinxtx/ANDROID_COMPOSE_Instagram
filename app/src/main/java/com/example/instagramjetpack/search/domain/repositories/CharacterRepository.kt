@@ -8,6 +8,6 @@ import com.example.instagramjetpack.search.domain.model.Character
 interface CharacterRepository {
     fun getCharacters(page:Int):Flow<Result<List<Characters>>>
 
-    suspend fun getCharacter(id:Int): Result<Character>
+    suspend fun getCharacter(id: Int): Result<Character>
 
 }

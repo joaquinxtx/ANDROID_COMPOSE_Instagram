@@ -33,13 +33,15 @@ class NetworkModule {
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RemoteModules{
+object RemoteModule {
+
     @Provides
     @Singleton
-    fun provideRickAndMortyApi():RickAndMortyApi{
+    fun provideRickAndMortyApi(): RickAndMortyApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .build().create(RickAndMortyApi::class.java)
+            .build()
+            .create(RickAndMortyApi::class.java)
     }
 }

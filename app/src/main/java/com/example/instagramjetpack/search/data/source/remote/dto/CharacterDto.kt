@@ -17,14 +17,14 @@ data class CharacterDto(
     val url: String
 )
 
-fun CharacterDto.toCharacter(): com.example.instagramjetpack.search.domain.model.Character{
+fun CharacterDto.toCharacter(): Character {
     return Character(
         id = id,
         name = name,
-        status=status,
+        status = status,
         species = species,
         origin = origin,
-        gender=gender,
+        gender = gender,
         location = location,
         image = image
     )

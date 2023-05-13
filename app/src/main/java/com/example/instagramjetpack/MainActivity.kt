@@ -27,6 +27,8 @@ import com.example.instagramjetpack.model.Routes
 import com.example.instagramjetpack.profile.ProfileScreen
 import com.example.instagramjetpack.reels.ReelsScreen
 import com.example.instagramjetpack.search.SearchScreen
+import com.example.instagramjetpack.search.ui.Detail
+import com.example.instagramjetpack.search.ui.DetailViewModel
 
 import com.example.instagramjetpack.search.ui.SearchViewModel
 import com.example.instagramjetpack.ui.theme.InstagramJetPackTheme
@@ -37,91 +39,18 @@ class MainActivity : ComponentActivity() {
 
     private val loginViewModel: LoginViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
+    private val detailViewModel: DetailViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            InstagramJetPackTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    val navigationController = rememberNavController()
-                    val navigationActions = remember(navigationController) {
-                        RickAndMortyActions(navigationController)
-                    }
-
-                    InstagramNavGraph(
-                        navigateToSearch = navigationActions.navigateToSearch,
-                        navigateToDetail = navigationActions.navigateToDetail,
-                        navigationController = navigationController,
-                        loginViewModel,
-                        searchViewModel,
-
-                    )
-
-
-                }
-            }
+            InstagramApp(
+                loginViewModel = loginViewModel,
+                searchViewModel = searchViewModel,
+                detailViewModel = detailViewModel
+            )
         }
     }
 }
 
-@Composable
-fun InstagramNavGraph(
-    navigateToSearch: () -> Unit,
-    navigateToDetail: (Int) -> Unit,
-    navigationController: NavHostController,
-    loginViewModel: LoginViewModel,
-    searchViewModel: SearchViewModel,
-
-
-    ) {
-    NavHost(
-        navController = navigationController,
-        startDestination = Routes.Search.route
-    ) {
-        composable(Routes.Login.route) {
-            LoginScreen(
-                loginViewModel,
-                navigationController
-            )
-        }
-        composable(Routes.Home.route) { HomeScreen(navigationController) }
-        composable(Routes.AddPublication.route) {
-            AddPublicationScreen(
-                navigationController
-            )
-        }
-        composable(Routes.Profile.route) { ProfileScreen(navigationController) }
-        composable(Routes.Search.route) {
-            SearchScreen(
-                onItemClicked = { navigateToDetail(it) },
-                searchViewModel, navigationController,
-
-            )
-        }
-        composable(
-           Routes.SearchId.detailId(id),
-          arguments = listOf(navArgument("id") { type = NavType.IntType }) ) {
-
-       }
-        composable(Routes.Reels.route) { ReelsScreen(navigationController) }
-    }
-
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    InstagramJetPackTheme {
-        Greeting("Android")
-    }
-}

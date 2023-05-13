@@ -1,5 +1,6 @@
 package com.example.instagramjetpack.search
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -54,16 +55,7 @@ fun SearchScreen(
     val state = searchViewModel.state
     val eventFlow = searchViewModel.eventFlow
 
-//    LaunchedEffect(key1 =true ){
-//        eventFlow.collectLatest { event ->
-//            when(event){
-//                is SearchViewModel.UIEvent.ShowSnackBar ->{
-//
-//                }
-//            }
-//
-//        }
-//    }
+
 
     MyScaffold(
         content = {
@@ -139,23 +131,26 @@ fun TitleSearch(searchViewModel: SearchViewModel) {
 @Composable
 fun PhotoGrid(characters: List<Characters>, onItemClicked: (Int) -> Unit) {
     LazyVerticalGrid(
-        cells = GridCells.Adaptive(minSize = 128.dp)
-    ) {
-        items(characters.size) { index ->
-            CharacterItem(index = characters[index], onItemClicked = { onItemClicked(it) })
+        cells = GridCells.Adaptive(minSize = 128.dp),
+        content = {
+            items(characters.size) { index ->
+                CharacterItem(
+                    item = characters[index],
+                    onItemClicked = { onItemClicked(it) })
 
-        }
-    }
+            }
+        })
 }
 
-@Composable
-fun CharacterItem(index: Characters, onItemClicked: (Int) -> Unit) {
 
-    Box(modifier = Modifier.clickable {}) {
+@Composable
+fun CharacterItem(item: Characters, onItemClicked: (Int) -> Unit) {
+
+    Box(modifier = Modifier.clickable { onItemClicked(item.id) }) {
 
         val painter = rememberAsyncImagePainter(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(index.image)
+                .data(item.image)
                 .size(Size.ORIGINAL)
                 .build()
         )
