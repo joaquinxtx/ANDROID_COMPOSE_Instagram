@@ -10,7 +10,7 @@ import dagger.hilt.android.components.ViewModelComponent
 
 @Module
 @InstallIn(ViewModelComponent::class)
-abstract  class RepositoriesModule {
+abstract class RepositoriesModule {
 
     @Binds
     abstract fun bindCharacterRepository(impl: CharacterRepositoryImpl): CharacterRepository
