@@ -35,7 +35,7 @@ fun InstagramNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Routes.Search.route
+        startDestination = Routes.Login.route
     ) {
         composable(Routes.Login.route) {
             LoginScreen(

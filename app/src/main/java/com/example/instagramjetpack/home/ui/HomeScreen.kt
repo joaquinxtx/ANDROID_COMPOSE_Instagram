@@ -263,12 +263,15 @@ fun FooterPublisher(user: String, comment: String, date: String, numberComment: 
 
     Box() {
         Column(modifier = Modifier.padding(start = 8.dp)) {
+            Row() {
             Text(
                 text = user,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(end = 5.dp)
             )
             Text(text = comment)
+
+            }
             Text(
                 text = "Ver los $numberComment comentarios",
                 fontSize = 19.sp,
