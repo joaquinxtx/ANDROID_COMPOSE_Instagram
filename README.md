@@ -47,8 +47,10 @@ Dependencies{
 
 ## Login
 ![TODOAPP]( app/src/main/res/images/patalla-1.png)
-![TODOAPP]( app/src/main/res/images/patalla-2.png)
-![TODOAPP]( app/src/main/res/images/patalla-3.png)
+
+![TODOAPP]( app/src/main/res/images/pantalla-2.png)
+
+![TODOAPP]( app/src/main/res/images/pantalla-3.png)
 
 
 ## Home
