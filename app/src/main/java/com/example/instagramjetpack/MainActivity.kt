@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
 
     private val loginViewModel: LoginViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
-    private val detailViewModel: DetailViewModel by viewModels()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,8 +47,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             InstagramApp(
                 loginViewModel = loginViewModel,
-                searchViewModel = searchViewModel,
-                detailViewModel = detailViewModel
+                searchViewModel = searchViewModel
             )
         }
     }

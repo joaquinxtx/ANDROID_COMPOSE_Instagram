@@ -1,7 +1,6 @@
 package com.example.instagramjetpack.home
 
 
-
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -29,6 +28,7 @@ import androidx.navigation.NavHostController
 import com.example.instagramjetpack.MyScaffold
 import com.example.instagramjetpack.R
 import com.example.instagramjetpack.Scaffold.ScaffoldViewModel
+import com.example.instagramjetpack.components.IconsBodyPublisher
 import com.example.instagramjetpack.home.data.getPublisherInstagram
 import com.example.instagramjetpack.home.data.getUsersInstagram
 
@@ -209,7 +209,7 @@ fun PublisherBody(
     numberComment: String,
     img: Int
 ) {
-    Column() {
+    Column {
         Image(
             painter = painterResource(id = img),
             contentDescription = "Publisher User",
@@ -217,7 +217,13 @@ fun PublisherBody(
                 .fillMaxWidth()
                 .height(250.dp)
         )
-        IconsBodyPublisher(publisherLikes, user, comment, date, numberComment)
+        IconPublisherAndFooterPublisher(
+            publisherLikes ,
+            user  ,
+            comment  ,
+            date  ,
+            numberComment
+        )
     }
 }
 
@@ -232,63 +238,21 @@ fun LikesPublisher(isSelected: Boolean, publisherLikes: Int) {
 }
 
 @Composable
-fun IconsBodyPublisher(
+fun IconPublisherAndFooterPublisher(
     publisherLikes: Int,
     user: String,
     comment: String,
     date: String,
     numberComment: String
-
 ) {
     var isClicked by remember { mutableStateOf(false) } /// pasar al view model
-    val iconImage = if (isClicked) R.drawable.ic_like_filled else  R.drawable.ic_like
-    val iconColor = if (isClicked) Color.Red else Color(0xFF626464)
+
 
     Column(
         modifier = Modifier
             .padding(horizontal = 9.dp)
     ) {
-        Row() {
-            Icon(
-                painterResource(iconImage),
-                contentDescription = "Close App",
-                modifier = Modifier
-                    .size(38.dp)
-                    .clickable(onClick = {
-                        isClicked = !isClicked
-                    }),
-                tint = iconColor
-
-            )
-            Box(Modifier.padding(12.dp))
-            Icon(
-                painterResource(id = R.drawable.ic_chat),
-                contentDescription = "Close App",
-                modifier = Modifier.size(38.dp),
-                tint = Color(0xFF626464)
-
-            )
-            Box(Modifier.padding(12.dp))
-            Icon(
-                painterResource(id = R.drawable.ic_rt),
-                contentDescription = "Close App",
-                modifier = Modifier
-                    .size(42.dp),
-                tint = Color(0xFF626464)
-
-            )
-            Image(
-                painterResource(id = R.drawable.ic_share),
-                contentDescription = "Close App",
-                modifier = Modifier
-                    .size(38.dp)
-                    .weight(1f),
-                alignment = Alignment.CenterEnd,
-                colorFilter = ColorFilter.tint(Color(0xFF626464))
-
-            )
-
-        }
+        IconsBodyPublisher()
         LikesPublisher(isSelected = isClicked, publisherLikes)
         FooterPublisher(user, comment, date, numberComment)
     }

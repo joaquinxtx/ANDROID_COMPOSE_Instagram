@@ -130,8 +130,10 @@ fun TitleSearch(searchViewModel: SearchViewModel) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PhotoGrid(characters: List<Characters>, onItemClicked: (Int) -> Unit) {
+
     LazyVerticalGrid(
         cells = GridCells.Adaptive(minSize = 128.dp),
+        modifier = Modifier.padding(bottom = 64.dp),
         content = {
             items(characters.size) { index ->
                 CharacterItem(
@@ -139,7 +141,11 @@ fun PhotoGrid(characters: List<Characters>, onItemClicked: (Int) -> Unit) {
                     onItemClicked = { onItemClicked(it) })
 
             }
-        })
+        }
+    )
+
+
+
 }
 
 

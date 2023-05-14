@@ -26,7 +26,7 @@ class DetailViewModel @Inject constructor(
 
     init {
         getCharacter()
-        Log.d("viewModel",state.character.toString())
+
     }
 
     private fun getCharacter() {
@@ -39,6 +39,7 @@ class DetailViewModel @Inject constructor(
                                 character = result.data!!,
                                 isLoading = false
                             )
+                            Log.d("viewModel",state.character.toString())
                         }
                         is Result.Error -> {
                             state = state.copy(

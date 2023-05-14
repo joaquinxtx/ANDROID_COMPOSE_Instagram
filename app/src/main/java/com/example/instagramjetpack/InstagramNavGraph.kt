@@ -29,7 +29,7 @@ fun InstagramNavGraph(
     navController: NavHostController = rememberNavController(),
     loginViewModel: LoginViewModel,
     searchViewModel: SearchViewModel,
-    detailViewModel: DetailViewModel
+
 
 
 ) {
@@ -63,7 +63,7 @@ fun InstagramNavGraph(
                 navArgument("id") { type = NavType.IntType }
             )
         ) {
-            Detail(detailViewModel)
+            Detail(navigationController = navController)
 
         }
         composable(Routes.Reels.route) { ReelsScreen(navController) }

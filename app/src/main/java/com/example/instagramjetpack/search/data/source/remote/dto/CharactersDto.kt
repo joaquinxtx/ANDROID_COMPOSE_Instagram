@@ -8,14 +8,14 @@ data class CharactersDto(
     val results: List<Result>
 )
 
-fun CharactersDto.toListCharacters():List<Characters>{
-    val resultEntries = results.mapIndexed{_,entries ->
-    Characters(
-        id = entries.id,
-        name = entries.name,
-        specie = entries.species,
-        image = entries.image
-    )
-}
-        return resultEntries
+fun CharactersDto.toListCharacters(): List<Characters> {
+    val resultEntries = results.mapIndexed { _, entries ->
+        Characters(
+            id = entries.id,
+            name = entries.name,
+            specie = entries.species,
+            image = entries.image
+        )
+    }
+    return resultEntries
 }

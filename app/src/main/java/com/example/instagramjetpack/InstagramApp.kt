@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.rememberNavController
 import com.example.instagramjetpack.login.ui.LoginViewModel
 import com.example.instagramjetpack.model.RickAndMortyActions
-import com.example.instagramjetpack.search.ui.DetailViewModel
+
 import com.example.instagramjetpack.search.ui.SearchViewModel
 import com.example.instagramjetpack.ui.theme.InstagramJetPackTheme
 
@@ -15,7 +15,6 @@ import com.example.instagramjetpack.ui.theme.InstagramJetPackTheme
 fun InstagramApp(
     loginViewModel: LoginViewModel,
     searchViewModel: SearchViewModel,
-    detailViewModel: DetailViewModel
 ) {
 
     InstagramJetPackTheme {
@@ -29,8 +28,7 @@ fun InstagramApp(
             navigateToDetail = navigationActions.navigateToDetail,
             navController = navController,
             loginViewModel,
-            searchViewModel,
-            detailViewModel
+            searchViewModel
 
         )
 
