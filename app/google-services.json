@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "918820667763",
+    "project_id": "instagramjetpack",
+    "storage_bucket": "instagramjetpack.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918820667763:android:59c42a0d0c6598971bc506",
+        "android_client_info": {
+          "package_name": "com.example.instagramjetpack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1UGcvkGEeCtrU4LIOo9aq8mMIrPwUsy0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

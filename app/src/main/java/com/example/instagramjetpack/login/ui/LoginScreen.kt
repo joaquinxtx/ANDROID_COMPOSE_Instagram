@@ -1,6 +1,7 @@
 package com.example.instagramjetpack
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +30,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.instagramjetpack.login.data.resources.Resource
 import com.example.instagramjetpack.login.ui.LoginViewModel
+import com.example.instagramjetpack.model.Routes
 
 
 @Composable
@@ -39,17 +42,17 @@ fun LoginScreen(loginViewModel: LoginViewModel, navigationController: NavHostCon
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        val isLoading:Boolean by loginViewModel.isLoading.observeAsState(initial = false)
-        if (isLoading){
+        val isLoading: Boolean by loginViewModel.isLoading.observeAsState(initial = false)
+        if (isLoading) {
             Box(
                 Modifier
                     .fillMaxSize(), contentAlignment = Alignment.Center
-                    ){
+            ) {
                 CircularProgressIndicator()
             }
-        }else{
+        } else {
             Header(Modifier.align(Alignment.TopEnd))
-            Body(Modifier.align(Alignment.Center),loginViewModel,navigationController)
+            Body(Modifier.align(Alignment.Center), loginViewModel, navigationController)
             Footer(Modifier.align(Alignment.BottomCenter))
 
         }
@@ -90,34 +93,61 @@ fun SingUp() {
 }
 
 @Composable
-fun Body(modifier: Modifier, loginViewModel: LoginViewModel,navigationController: NavHostController ) {
-    val email:String by loginViewModel.email.observeAsState(initial = "")
-    val password:String by loginViewModel.password.observeAsState(initial = "")
-    val isLoginEnable:Boolean by loginViewModel.isLoginEnable.observeAsState(initial = false)
+fun Body(
+    modifier: Modifier,
+    loginViewModel: LoginViewModel,
+    navigationController: NavHostController
+) {
+    val email: String by loginViewModel.email.observeAsState(initial = "")
+    val password: String by loginViewModel.password.observeAsState(initial = "")
+    val isLoginEnable: Boolean by loginViewModel.isLoginEnable.observeAsState(initial = false)
+
+    val loginFlow = loginViewModel.loginFlow.collectAsState()
 
 
     Column(modifier = modifier) {
         ImageLogo(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
         Email(email) {
-            loginViewModel.onLoginChange(it,password)
+            loginViewModel.onLoginChange(it, password)
 
         }
         Spacer(modifier = Modifier.size(4.dp))
-        Password(password,loginViewModel) {
-            loginViewModel.onLoginChange(email,it)
+        Password(password, loginViewModel) {
+            loginViewModel.onLoginChange(email, it)
 
         }
         Spacer(modifier = Modifier.size(8.dp))
         ForgotPassword(Modifier.align(Alignment.End))
         Spacer(modifier = Modifier.size(16.dp))
-        LoginButton(isLoginEnable , loginViewModel ,navigationController)
+        LoginButton(isLoginEnable, loginViewModel, navigationController , email, password)
         Spacer(modifier = Modifier.size(16.dp))
         LoginDivider()
         Spacer(modifier = Modifier.size(32.dp))
         SocialLogin()
 
 
+    }
+
+    loginFlow.value.let {
+        when(it){
+            is Resource.Failure -> {
+                val context = LocalContext.current
+                Toast.makeText(context, it.exception.message,Toast.LENGTH_LONG).show()
+            }
+            Resource.Loading -> {
+                CircularProgressIndicator()
+            }
+            is Resource.Success -> {
+                LaunchedEffect(Unit){
+                    navigationController.navigate(Routes.Home.route){
+                        popUpTo(Routes.Home.route){inclusive = true}
+                    }
+
+                }
+            }
+
+        }
     }
 }
 
@@ -169,10 +199,17 @@ fun LoginDivider() {
 }
 
 @Composable
-fun LoginButton(loginEnable: Boolean , loginViewModel: LoginViewModel ,navigationController: NavHostController) {
+fun LoginButton(
+    loginEnable: Boolean,
+    loginViewModel: LoginViewModel,
+    navigationController: NavHostController,
+    email: String,
+    password: String
+) {
+
 
     Button(
-        onClick = {loginViewModel.onLoginSelected(navigationController) } ,
+        onClick = { loginViewModel.login(email, password) },
         enabled = loginEnable,
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
@@ -184,8 +221,9 @@ fun LoginButton(loginEnable: Boolean , loginViewModel: LoginViewModel ,navigatio
     ) {
         Text(text = "Log In")
     }
-}
 
+
+}
 
 
 @Composable
@@ -200,8 +238,8 @@ fun ForgotPassword(modifier: Modifier) {
 }
 
 @Composable
-fun Password(password: String, loginViewModel: LoginViewModel ,onTextChange: (String) -> Unit) {
-    val passwordVisibility:Boolean by loginViewModel.passwordVisibility.observeAsState(initial = false)
+fun Password(password: String, loginViewModel: LoginViewModel, onTextChange: (String) -> Unit) {
+    val passwordVisibility: Boolean by loginViewModel.passwordVisibility.observeAsState(initial = false)
     TextField(
         value = password,
         onValueChange = { onTextChange(it) },
