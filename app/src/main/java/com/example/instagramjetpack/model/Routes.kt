@@ -16,6 +16,7 @@ sealed class Routes(val route : String){
     }
     object AddPublication:Routes("addPublication")
     object Reels:Routes("reels")
+    object Register:Routes("register")
 }
 
 class RickAndMortyActions(navController: NavController){

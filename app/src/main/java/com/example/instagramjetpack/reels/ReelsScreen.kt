@@ -19,7 +19,7 @@ import com.example.instagramjetpack.home.HomeScreenComplete
 fun ReelsScreen( navigationController: NavHostController) {
     MyScaffold(
         content = { Column {
-            HeaderHome()
+
             HomeScreenComplete()
 
         }},

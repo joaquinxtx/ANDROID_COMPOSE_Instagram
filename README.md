@@ -46,19 +46,19 @@ Dependencies{
 # Layout
 
 ## Login
-![TODOAPP]( app/src/main/res/images/patalla-1.png)
+![TODOAPP]( app/src/main/res/drawable/images/patalla-1.png)
 
-![TODOAPP]( app/src/main/res/images/pantalla-2.png)
+![TODOAPP]( app/src/main/res/drawable/images/pantalla-2.png)
 
-![TODOAPP]( app/src/main/res/images/pantalla-3.png)
+![TODOAPP]( app/src/main/res/drawable/images/pantalla-3.png)
 
 
 ## Home
-![TODOAPP](app/src/main/res/images/pantalla-4.png)
+![TODOAPP](app/src/main/res/drawable/images/pantalla-4.png)
 ## Search
-![TODOAPP](app/src/main/res/images/pantalla-5.png)
+![TODOAPP](app/src/main/res/drawable/images/pantalla-5.png)
 ## Detail Search
-![TODOAPP](app/src/main/res/images/pantalla-6.png)
+![TODOAPP](app/src/main/res/drawable/images/pantalla-6.png)
 
 # Project under development currently 🛠⚙
 
