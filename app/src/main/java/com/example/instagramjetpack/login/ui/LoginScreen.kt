@@ -124,7 +124,7 @@ fun Body(
         Spacer(modifier = Modifier.size(16.dp))
         LoginDivider()
         Spacer(modifier = Modifier.size(32.dp))
-        SocialLogin()
+        SocialLogin(navigationController)
 
 
     }
@@ -152,21 +152,18 @@ fun Body(
 }
 
 @Composable
-fun SocialLogin() {
+fun SocialLogin(navigationController: NavHostController) {
     Row(
         Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.fb),
-            contentDescription = "social login facebook", modifier = Modifier.size(16.dp)
-        )
+
         Text(
-            text = "Continue as Joaquin",
+            text = "Desea registrarse?",
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 8.dp),
+            modifier = Modifier.padding(horizontal = 8.dp).clickable { navigationController.navigate(Routes.Register.route) },
             color = Color(0xFF4EA8E9)
         )
     }

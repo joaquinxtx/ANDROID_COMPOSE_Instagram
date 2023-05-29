@@ -9,13 +9,14 @@ import com.example.instagramjetpack.MyScaffold
 import com.example.instagramjetpack.Scaffold.ScaffoldViewModel
 import com.example.instagramjetpack.home.HeaderHome
 import com.example.instagramjetpack.home.HomeScreenComplete
+import com.example.instagramjetpack.login.ui.LoginViewModel
 
 
 @Composable
 fun ProfileScreen( navigationController: NavHostController) {
     MyScaffold(
         content = { Column {
-            HeaderHome()
+
             HomeScreenComplete()
 
         }},
