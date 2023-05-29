@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.instagramjetpack.MyScaffold
 import com.example.instagramjetpack.R
@@ -31,18 +32,20 @@ import com.example.instagramjetpack.Scaffold.ScaffoldViewModel
 import com.example.instagramjetpack.components.IconsBodyPublisher
 import com.example.instagramjetpack.home.data.getPublisherInstagram
 import com.example.instagramjetpack.home.data.getUsersInstagram
+import com.example.instagramjetpack.login.ui.LoginViewModel
 
 import com.example.instagramjetpack.model.PublisherUsers
+import com.example.instagramjetpack.model.Routes
 import com.example.instagramjetpack.model.UserFake
 
 
 @Composable
-fun HomeScreen(navigationController: NavHostController) {
+fun HomeScreen(navigationController: NavHostController  , loginViewModel: LoginViewModel ) {
 
     MyScaffold(
         content = {
             Column {
-                HeaderHome()
+                HeaderHome(loginViewModel , navigationController )
                 HomeScreenComplete()
 
             }
@@ -79,12 +82,15 @@ fun HomeScreenComplete() {
 
 //Header Logos + Iconos
 @Composable
-fun HeaderHome() {
+fun HeaderHome( loginViewModel: LoginViewModel , navigationController: NavHostController ) {
     TopAppBar(title = { LogoInstagram() },
         backgroundColor = Color.White,
 
         actions = {
-            IconButton(onClick = {}) {
+            IconButton(onClick = {
+                loginViewModel.logout()
+                navigationController.navigate(Routes.Login.route)
+            }) {
                 Icon(
                     painterResource(id = R.drawable.ic_like),
                     contentDescription = "Close App",

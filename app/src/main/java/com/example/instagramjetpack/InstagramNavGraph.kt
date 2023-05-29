@@ -1,8 +1,6 @@
 package com.example.instagramjetpack
 
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -12,12 +10,12 @@ import androidx.navigation.navArgument
 import com.example.instagramjetpack.addPublication.AddPublicationScreen
 import com.example.instagramjetpack.home.HomeScreen
 import com.example.instagramjetpack.login.ui.LoginViewModel
+import com.example.instagramjetpack.login.ui.RegisterUserScreen
 import com.example.instagramjetpack.model.Routes
 import com.example.instagramjetpack.profile.ProfileScreen
 import com.example.instagramjetpack.reels.ReelsScreen
 import com.example.instagramjetpack.search.SearchScreen
 import com.example.instagramjetpack.search.ui.Detail
-import com.example.instagramjetpack.search.ui.DetailViewModel
 import com.example.instagramjetpack.search.ui.SearchViewModel
 
 
@@ -43,11 +41,10 @@ fun InstagramNavGraph(
                 navController
             )
         }
-        composable(Routes.Home.route) { HomeScreen(navController) }
+        composable(Routes.Home.route) { HomeScreen(navController,loginViewModel) }
         composable(Routes.AddPublication.route) {
             AddPublicationScreen(
-                navController
-            )
+                navController)
         }
         composable(Routes.Profile.route) { ProfileScreen(navController) }
         composable(Routes.Search.route) {
@@ -67,6 +64,8 @@ fun InstagramNavGraph(
 
         }
         composable(Routes.Reels.route) { ReelsScreen(navController) }
+
+        composable(Routes.Register.route) { RegisterUserScreen(navController , loginViewModel) }
     }
 
 }

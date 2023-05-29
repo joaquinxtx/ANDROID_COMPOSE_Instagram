@@ -30,11 +30,17 @@ class LoginViewModel @Inject constructor(
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
 
+    private val _name = MutableLiveData<String>()
+    val name: LiveData<String> = _name
+
     private val _password = MutableLiveData<String>()
     val password: LiveData<String> = _password
 
     private val _isLoginEnable = MutableLiveData<Boolean>()
     val isLoginEnable: LiveData<Boolean> = _isLoginEnable
+
+    private val _isCreateUserEnable = MutableLiveData<Boolean>()
+    val isCreateUserEnable: LiveData<Boolean> = _isCreateUserEnable
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -79,7 +85,7 @@ class LoginViewModel @Inject constructor(
         _loginFlow.value =null
     }
 
-    //  val loginUseCase = LoginUseCase()
+
 
 
     fun onPasswordVisibility(passwordVisibility: Boolean) {
@@ -96,17 +102,18 @@ class LoginViewModel @Inject constructor(
     private fun enableLogin(email: String, password: String) =
         Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 6
 
-    fun onLoginSelected(navigationController: NavHostController) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = loginUseCase(email.value!!, password.value!!)
-            if (result) {
 
-                navigationController.navigate(Routes.Home.route)
-            }
-            _isLoading.value = false
-        }
+    private fun enableCreateUser(name:String ,email: String, password: String) =
+        Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 6 && name.length > 4
+
+    fun onCreateUserChange(name:String ,email: String, password: String) {
+        _email.value = email
+        _password.value = password
+        _name.value = name
+        _isCreateUserEnable.value = enableCreateUser(name ,email, password)
     }
+
+
 
 
 }
