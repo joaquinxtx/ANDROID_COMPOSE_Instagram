@@ -13,6 +13,7 @@
 - Dependency injection with Dagger Hilt
 - MVVM (Model-View-ViewModel) architecture
 - Clean Architecture
+- Authentication Firebase 
 
 
 
